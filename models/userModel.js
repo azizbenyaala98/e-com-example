@@ -5,7 +5,7 @@ const schema =new mongoose.Schema({
     username :{required:true,type:String},
     fullname:{type:String},
     password:{required:true,type:String},
-    role:{type:String},
+    role: { type: String, enum: ['owner', 'admin', 'client'] },
     joinedAt:{type:Date},
     isActive:{type:Boolean},
 })
