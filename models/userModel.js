@@ -9,4 +9,6 @@ const schema =new mongoose.Schema({
     joinedAt:{type:Date},
     isActive:{type:Boolean},
 })
-module.exports=mongoose.model('user',schema);
+
+const User =module.exports=mongoose.model('user',schema);
+module.exports = User;
