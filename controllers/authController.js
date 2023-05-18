@@ -4,18 +4,23 @@ const User = require('../models/userModel')
 
 exports.isAuth = async (req, res, next) => {
   try {
+    SECRET_KEY="123456789azertyuiop"
     
     const token = req.headers["authorization"];
     if (!token) {
       return res.status(400).send({ errors: [{ msg: "Unauthorized" }] });
     }
-    const decoded = await jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = await jwt.verify(token, SECRET_KEY);
+    console.log(decoded)
     const user = await User.findById(decoded.id).select("-password");
     if (!user) {
       return res.status(400).send({ errors: [{ msg: "Unauthorized" }] });
     }
     req.user = user;
+    console.log("auth middelware")
+
     next();
+   
   } catch (error) {
     return res.status(500).send({ errors: [{ msg: "Unauthorized" }] });
   }
@@ -30,6 +35,7 @@ exports.hasRole = (role) => {
         });
       }
        next();
+       console.log("ahsrole ")
      };
 }
 

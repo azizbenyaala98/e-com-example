@@ -1,9 +1,11 @@
 const express = require('express');
+const { hasRole } = require('../controllers/authController');
 const router = express.Router();
 const Order = require('../models/orderModel');
 
 
-router.post('/add', async (req, res) => {
+router.post('/add',hasRole("client")
+, async (req, res) => {
   try {
     // Extract order details from the request body
     const { date, status, client, total, items } = req.body;
@@ -28,7 +30,7 @@ router.post('/add', async (req, res) => {
 });
 
 // Read all orders
-router.get('/getall', async (req, res) => {
+router.get('/getall',hasRole("client"), async (req, res) => {
   try {
     const orders = await Order.find();
     res.json(orders);
@@ -38,7 +40,7 @@ router.get('/getall', async (req, res) => {
 });
 
 // Read a specific order
-router.get('/getorder/:id', async (req, res) => {
+router.get('/getorder/:id',hasRole("client"), async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) {
@@ -51,7 +53,7 @@ router.get('/getorder/:id', async (req, res) => {
 });
 
 // Update an order
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id',hasRole("client"), async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!order) {
@@ -64,7 +66,7 @@ router.put('/update/:id', async (req, res) => {
 });
 
 // Delete an order
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id',hasRole("client"), async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
     if (!order) {
@@ -77,7 +79,7 @@ router.delete('/delete/:id', async (req, res) => {
 
 
 // Update order status and quantity
-router.patch('/patch/:id', async (req, res) => {
+router.patch('/patch/:id',hasRole("client"), async (req, res) => {
     try {
       const { id } = req.params;
       const { status, quantity } = req.body;

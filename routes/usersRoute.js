@@ -1,9 +1,12 @@
 const express=require("express");
+const bcrypt=require("bcrypt")
 const { model } = require("mongoose");
 const router=express.Router();
 const User = require('../models/userModel')
 
-router.post('/auth/login', async (req, res) => {
+const jwt = require("jsonwebtoken")
+
+router.post('/login', async (req, res) => {
     try {
       // req.body email,password
       const { email, password } = req.body;
@@ -43,7 +46,7 @@ router.post('/auth/login', async (req, res) => {
     }
   });
 
-  router.post('/auth/signup', async (req, res) => {
+  router.post('/signup', async (req, res) => {
     try {
         console.log(req.body)
         // Check email
@@ -64,16 +67,16 @@ router.post('/auth/login', async (req, res) => {
         });
 
         // Hash password
-        const hashedpassword = bcrypt.hashSync(user.password, salt);
+        const hashedpassword = bcrypt.hashSync(user.password, 10);
         user.password = hashedpassword;
-
+        SECRET_KEY="123456789azertyuiop"
 
         // create a token using json webtoken
         const token = jwt.sign(
             {
                 id: user._id,
             },
-            process.env.SECRET_KEY,
+            SECRET_KEY,
             { expiresIn: "2d" }
         );
 
