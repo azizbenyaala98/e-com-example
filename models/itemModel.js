@@ -5,10 +5,8 @@ const itemSchema = new mongoose.Schema({
   price: { required: true, type: Number },
   description: { type: String },
   image: { type: String },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  quantity: { type: Number },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  quantity: {  default: 0, type: Number },
 });
 
-const Item = mongoose.model('Item', itemSchema);
-
-module.exports = Item;
+module.exports=mongoose.model("Item", itemSchema);

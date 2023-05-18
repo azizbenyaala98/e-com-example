@@ -2,35 +2,33 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/orderModel');
 
-// Create an order
-router.post('/order/add', async (req, res) => {
+
+router.post('/add', async (req, res) => {
   try {
-    const {items} = req.body;
+    // Extract order details from the request body
+    const { date, status, client, total, items } = req.body;
 
-    // Calculate the total of the order based on the items
-    let x = 0;
-    for (const item of items) {
-      item.total = item.total + (item.quantity * item.price); // Assuming each item has a 'price' property
-    }
-
-    // Create the order
-    const order = new Order({
-      items
-    
+    // Create a new order instance
+    const newOrder = new Order({
+      date: date,
+      status: status,
+      client: client,
+      total: total,
+      items: items
     });
 
     // Save the order to the database
-    await order.save();
+    const savedOrder = await newOrder.save();
 
-    res.status(201).json({ order });
+    res.status(201).json(savedOrder);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to create the order' });
+    res.status(500).json({ message: 'Failed to add the order' });
   }
 });
 
 // Read all orders
-router.get('/order/getall', async (req, res) => {
+router.get('/getall', async (req, res) => {
   try {
     const orders = await Order.find();
     res.json(orders);
@@ -40,7 +38,7 @@ router.get('/order/getall', async (req, res) => {
 });
 
 // Read a specific order
-router.get('/order/getorder/:id', async (req, res) => {
+router.get('/getorder/:id', async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) {
@@ -53,7 +51,7 @@ router.get('/order/getorder/:id', async (req, res) => {
 });
 
 // Update an order
-router.put('/order/update/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!order) {
@@ -66,7 +64,7 @@ router.put('/order/update/:id', async (req, res) => {
 });
 
 // Delete an order
-router.delete('/order/delete/:id', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
     if (!order) {
@@ -79,7 +77,7 @@ router.delete('/order/delete/:id', async (req, res) => {
 
 
 // Update order status and quantity
-router.patch('/order/patch/:id', async (req, res) => {
+router.patch('/patch/:id', async (req, res) => {
     try {
       const { id } = req.params;
       const { status, quantity } = req.body;
@@ -105,7 +103,7 @@ router.patch('/order/patch/:id', async (req, res) => {
       res.status(400).json({ error: error.message });
     }
   });
-
+ 
 
 });
 

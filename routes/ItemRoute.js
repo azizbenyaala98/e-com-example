@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Item = require('../models/itemModel');
+const{isAuth,hasRole} =require ('../controllers/authController')
 
-router.get('/item/getAll', async (req, res) => {
+router.get('/getAll',hasRole("owner"), async (req, res) => {
   try {
     const data = await Item.find();
     res.status(200).json(data);
@@ -12,7 +13,7 @@ router.get('/item/getAll', async (req, res) => {
   }
 });
 
-router.get('/item/getById/:id', async (req, res) => {
+router.get('/getById/:id',hasRole("owner"), async (req, res) => {
   try {
     const id = req.params.id;
     const data = await Item.findById(id);
@@ -23,7 +24,7 @@ router.get('/item/getById/:id', async (req, res) => {
   }
 });
 
-router.post('/item/add', async (req, res) => {
+router.post('/item/add',hasRole("owner"), async (req, res) => {
   try {
     const item = new Item({
       name: req.body.name,
@@ -34,6 +35,7 @@ router.post('/item/add', async (req, res) => {
       quantity: req.body.quantity,
     });
     const result = await item.save();
+    
     res.status(200).json(result);
   } catch (error) {
     console.log(error);
@@ -41,7 +43,7 @@ router.post('/item/add', async (req, res) => {
   }
 });
 
-router.put('/item/update/:id', async (req, res) => {
+router.put('/update/:id',hasRole("owner"), async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
@@ -54,7 +56,7 @@ router.put('/item/update/:id', async (req, res) => {
   }
 });
 
-router.delete('/item/delete/:id', async (req, res) => {
+router.delete('/item/delete/:id',hasRole("owner"), async (req, res) => {
   try {
     const id = req.params.id;
     await Item.findByIdAndDelete(id);
